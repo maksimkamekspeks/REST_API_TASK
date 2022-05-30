@@ -1,18 +1,18 @@
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
-from api import views
+from api.views import PostViewSet, LikesList
+from users.views import UserViewSet, UserCreateViewSet
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'posts', views.PostViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'posts', PostViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('register/', views.UserCreateViewSet.as_view()),
-    path('likes/', views.LikesList.as_view()),
-    path('<int:post_id>/like', views.like, name='like'),
+    path('register/', UserCreateViewSet.as_view()),
+    path('likes/', LikesList.as_view()),
 ]
 
