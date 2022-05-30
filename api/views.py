@@ -6,7 +6,6 @@ from rest_framework.decorators import action
 from django.utils import timezone
 from rest_framework.response import Response
 from api.filters import LikesFilter
-import django_filters.rest_framework
 
 class PostViewSet(viewsets.ModelViewSet):
     """
