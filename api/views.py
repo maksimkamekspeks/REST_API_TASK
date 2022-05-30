@@ -5,7 +5,7 @@ from api.permissions import IsOwnerOrReadOnly
 from rest_framework import permissions, viewsets
 from rest_framework import mixins
 from rest_framework import generics
-from api.services import add_remove_like, aggregated_likes_by_date
+from api.services import add_remove_like
 from django.http import HttpResponse, HttpResponseRedirect
 
 
@@ -43,16 +43,24 @@ class PostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
 def like(request, post_id):
     add_remove_like(request, post_id)
-    return HttpResponseRedirect('http://127.0.0.1:8000/posts/')
-
-def likes_by_date(request, date_interval):
-    response =  aggregated_likes_by_date(request, date_interval)
-    return response
+    return HttpResponseRedirect('http://127.0.0.1:8000/posts')
 
 
-class LikesViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Likes.objects.all()
+
+class LikesList(generics.ListAPIView):
     serializer_class = LikesSerializer
+
     permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        queryset = Likes.objects.all()
+        date_from = self.request.query_params.get('date_from', None)
+        date_to = self.request.query_params.get('date_to', None)
+        if (date_from is not None) and (date_to is not None):
+            queryset = queryset.filter(created__gte=date_from).filter(created__lte=date_to)
+        return queryset
+
+
+
