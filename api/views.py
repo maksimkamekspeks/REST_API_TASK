@@ -8,9 +8,6 @@ from rest_framework.response import Response
 from api.filters import LikesFilter
 
 class PostViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows posts to be viewed or edited.
-    """
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
@@ -41,9 +38,6 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({'status': 'post has disliked'})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-def last_login(request):
-    pass
 
 class LikesList(generics.ListAPIView):
     queryset = Likes.objects.all()

@@ -1,16 +1,11 @@
 from django.contrib.auth.models import User
-from users.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.decorators import action
-from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, generics, status, mixins
-from api.models import Likes
+from users.serializers import UserSerializer, UserCreateSerializer
+from users.models import UsersInformation
 
-# Create your views here.
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -19,9 +14,10 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     def user_activity(self, request, pk=None):
         user = self.get_object()
         user_last_login = user.last_login
-        response = user_last_login.strftime('%y-%m-%d %a %H:%M:%S')
-        return Response(response)
-
+        last_login_time = user_last_login.strftime('%y-%m-%d %a %H:%M:%S')
+        user_info = UsersInformation.objects.filter(user=user).last()
+        last_user_action = user_info.last_request.strftime('%y-%m-%d %a %H:%M:%S')
+        return Response({'last-login': last_login_time, 'last_action': last_user_action})
 
 class UserCreateViewSet(mixins.CreateModelMixin,
                   generics.GenericAPIView):

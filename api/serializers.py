@@ -1,9 +1,7 @@
 from api.models import Post, Likes
 from rest_framework import serializers
 
-
 class PostSerializer(serializers.HyperlinkedModelSerializer):
-
     owner = serializers.ReadOnlyField(source = 'owner.username')
     class Meta:
         model = Post
