@@ -50,12 +50,6 @@ class LikesList(generics.ListAPIView):
         queryset = Likes.objects.all()
         queryset = queryset.filter(user=user)
         return queryset
-        # queryset = Likes.objects.all()
-        # date_from = self.request.query_params.get('date_from', None)
-        # date_to = self.request.query_params.get('date_to', None)
-        # if (date_from is not None) and (date_to is not None):
-        #     queryset = queryset.filter(created__gte=date_from).filter(created__lte=date_to)
-        # return queryset
 
 
 
